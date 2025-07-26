@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "lint": "eslint src/**/*.js",
     "start": "node ./src/index.js",
@@ -10,13 +11,11 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
-    "type": "git",
     "url": "git+https://github.com/melovarr/nodejs-hw-mongodb.git"
   },
   "keywords": [],
   "author": "S_ZHELOBKOV <meeelnik@gmail.com>",
   "license": "ISC",
-  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/melovarr/nodejs-hw-mongodb/issues"
   },

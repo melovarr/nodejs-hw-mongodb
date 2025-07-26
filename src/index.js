@@ -1,12 +1,21 @@
-import express from 'express';
-import cors from 'cors';
+import { setupServer } from './server.js';
+import { initMongoConnection } from './db/initMongoConnection.js';
 
-const app = express();
+const bootstrap = async () => {
+  await initMongoConnection();
+  setupServer();
+};
+bootstrap();
 
-const PORT = 3005;
+// import express from 'express';
+// import cors from 'cors';
 
-app.use(cors());
+// const app = express();
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+// const PORT = 3005;
+
+// app.use(cors());
+
+// app.listen(PORT, () => {
+//   console.log(`Server is running on port ${PORT}`);
+// });
