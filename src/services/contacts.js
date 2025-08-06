@@ -7,20 +7,29 @@ export const getAllContacts = async ({
   perPage = 10,
   sortOrder = SORT_ORDER.ASC,
   sortBy = '_id',
+  filter = {},
 }) => {
   const limit = perPage;
   const skip = (page - 1) * perPage;
 
-  const contactsQuery = ContactsCollection.find();
-  const contactsCount = await ContactsCollection.find()
-    .merge(contactsQuery)
-    .countDocuments();
+  const filterConfig = {};
+  if (filter.contactType) {
+    filterConfig.contactType = filter.contactType;
+  }
+  if (typeof filter.isFavourite === 'boolean') {
+    filterConfig.isFavourite = filter.isFavourite;
+  }
 
-  const contacts = await contactsQuery
-    .skip(skip)
-    .limit(limit)
-    .sort({ [sortBy]: sortOrder })
-    .exec();
+  const contactsQuery = ContactsCollection.find(filterConfig);
+
+  const [contactsCount, contacts] = await Promise.all([
+    ContactsCollection.countDocuments(filterConfig),
+    contactsQuery
+      .skip(skip)
+      .limit(limit)
+      .sort({ [sortBy]: sortOrder })
+      .exec(),
+  ]);
 
   const paginationData = calculatePaginationData(contactsCount, perPage, page);
   return {
@@ -42,9 +51,9 @@ export const updateContact = async (contactId, payload, options = {}) => {
   const rawResult = await ContactsCollection.findOneAndUpdate(
     { _id: contactId },
     payload,
-    { new: true, includeResultMetadata: true, ...options },
+    { new: true,includeResultMetadata: true, ...options }
   );
-  if (!rawResult || !rawResult.value) return null;
+  if (!rawResult||!rawResult.value) return null;
   return {
     contact: rawResult.value,
     isNew: Boolean(rawResult?.lastErrorObject?.upserted),
