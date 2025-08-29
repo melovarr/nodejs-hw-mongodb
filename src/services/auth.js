@@ -1,12 +1,20 @@
 import createHttpError from 'http-errors';
 import { UsersCollection } from '../db/models/user.js';
 import bcrypt from 'bcrypt';
-import { FIFTEEN_MINUTES, ONE_MONTH, SMTP } from '../constants/index.js';
+import {
+  FIFTEEN_MINUTES,
+  ONE_MONTH,
+  SMTP,
+  TEMPLATES_DIR,
+} from '../constants/index.js';
 import { randomBytes } from 'crypto';
 import { SessionsCollection } from '../db/models/session.js';
 import { getEnvVar } from '../utils/getEnvVar.js';
 import jwt from 'jsonwebtoken';
 import { sendEmail } from '../utils/sendMail.js';
+import handlebars from 'handlebars';
+import path from 'node:path';
+import fs from 'node:fs/promises';
 
 export const registerUser = async (payload) => {
   const user = await UsersCollection.findOne({ email: payload.email });
@@ -111,7 +119,7 @@ export const resetPassword = async (payload, sessionId) => {
     { _id: user._id },
     { password: encryptedPassword },
   );
-  await SessionsCollection.deleteOne({ _id: sessionId });
+  // await SessionsCollection.deleteOne({ _id: sessionId });
 };
 
 export const requestResetToken = async (email) => {
@@ -122,26 +130,43 @@ export const requestResetToken = async (email) => {
   const resetToken = jwt.sign(
     {
       sub: user._id,
+      email,
     },
     getEnvVar('JWT_SECRET'),
     {
       expiresIn: '5m',
     },
   );
-  try {
-    await sendEmail({
-      from: getEnvVar(SMTP.SMTP_FROM),
-      to: email,
-      subject: 'Reset your password',
-      html: `<p>Click <a href="${resetToken}">here</a> to reset your password!</p>`,
-    });
-  } catch (error) {
-    throw createHttpError(
-      500,
-      'Failed to send the email, please try again later.',
-      {
-        errors: error.details,
-      },
-    );
-  }
+
+  const resetPasswordTemplatePath = path.join(
+    TEMPLATES_DIR,
+    'reset-password-email.html',
+  );
+
+  const templateSource = (
+    await fs.readFile(resetPasswordTemplatePath)
+  ).toString();
+
+  const template = handlebars.compile(templateSource);
+  const html = template({
+    name: user.name,
+    link: `${getEnvVar('APP_DOMAIN')}/reset-password?token=${resetToken}`,
+  });
+
+  // try {
+  await sendEmail({
+    from: getEnvVar(SMTP.SMTP_FROM),
+    to: email,
+    subject: 'Reset your password',
+    html,
+  });
+  // } catch (error) {
+  //   throw createHttpError(
+  //     500,
+  //     'Failed to send the email, please try again later.',
+  //     {
+  //       errors: error.details,
+  //     },
+  //   );
+  // }
 };
