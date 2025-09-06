@@ -1,0 +1,20 @@
+# swagger/components/schemas/user.yaml
+
+type: object
+required:
+  - name
+  - email
+  - password
+properties:
+  name:
+    description: "User's name"
+    type: string
+    example: 'Meme Pepe'
+  email:
+    description: "User's email"
+    type: string
+    example: 'meme.pepe@example.com'
+  password:
+    description: "User's password"
+    type: string
+    example: 'strongpassword123'

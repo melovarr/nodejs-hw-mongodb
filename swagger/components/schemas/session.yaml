@@ -1,0 +1,31 @@
+# swagger/components/schemas/session.yaml
+
+type: object
+required:
+  - accessToken
+  - refreshToken
+  - accessTokenValidUntil
+  - refreshTokenValidUntil
+properties:
+  userId:
+    description: "User's ID"
+    type: string
+    example: '64a7b2f5e4b0c8a1d2f3g4h5'
+  accessToken:
+    description: 'Access token for the user'
+    type: string
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+  refreshToken:
+    description: 'Refresh token for the user'
+    type: string
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+  accessTokenValidUntil:
+    description: 'Access token expiration time'
+    type: string
+    format: date-time
+    example: '2024-12-31T23:59:59Z'
+  refreshTokenValidUntil:
+    description: 'Refresh token expiration time'
+    type: string
+    format: date-time
+    example: '2025-12-31T23:59:59Z'

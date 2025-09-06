@@ -1,0 +1,68 @@
+tags:
+  - Contacts
+summary: Get all contacts
+operationId: getAllContact
+description: 'Get all contacts'
+security:
+  - bearerAuth: []
+parameters:
+  - in: query
+    name: page
+    required: false
+    schema:
+      type: integer
+      example: 1
+      description: Page number for pagination
+  - in: query
+    name: perPage
+    required: false
+    schema:
+      type: integer
+      example: 10
+      description: Number of contacts to return per page
+  - in: query
+    name: sortOrder
+    required: false
+    schema:
+      type: string
+      example: asc
+      description: Sort order, either 'asc' or 'desc'
+  - in: query
+    name: sortBy
+    required: false
+    schema:
+      type: string
+      example: name
+      enum: ['_id', 'name', 'phoneNumber', 'email', 'isFavorite', 'contactType']
+      description: Field to sort by, e.g., 'name' or 'contactType'
+  - in: query
+    name: filter
+    required: false
+    schema:
+      type: string
+      example: contactType
+      enum: ['contactType', 'isFavorite']
+      description: Field to filter by some value
+responses:
+  '200':
+    description: 'Get all contacts'
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Successfully found contacts!
+            data:
+              type: object
+              $ref: '../../components/schemas/contact.yaml'
+  '401':
+    $ref: '../../components/responses/401.yaml'
