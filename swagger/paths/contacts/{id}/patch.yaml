@@ -19,14 +19,7 @@ requestBody:
     multipart/form-data:
       schema:
         type: object
-        required:
-          - contactId
-          - userId
         properties:
-          contactId:
-            description: "Contact's id"
-            type: string
-            example: 65e4decdd286b30065d54af9
           name:
             description: "Contact's name"
             type: string
@@ -50,11 +43,7 @@ requestBody:
           photo:
             description: "Link to contact's avatar image"
             type: string
-            example: https://res.cloudinary.com/uqwgdu/image/upload/image.png
-          userId:
-            description: "Contact's owner id"
-            type: string
-            example: 65e4decdd286b30065d54af9
+            format: binary
 responses:
   '200':
     description: Updates a contact

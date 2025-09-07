@@ -35,6 +35,10 @@ requestBody:
             description: 'Type of contact'
             type: string
             enum: ['personal', 'work', 'other']
+          photo:
+            description: "Contact's avatar image"
+            type: string
+            format: binary
 responses:
   '201':
     description: Creates a contact

@@ -92,16 +92,25 @@
           },
           {
             "in": "query",
-            "name": "filter",
+            "name": "contactType",
             "required": false,
             "schema": {
               "type": "string",
-              "example": "contactType",
               "enum": [
-                "contactType",
-                "isFavorite"
+                "work",
+                "home",
+                "personal"
               ],
-              "description": "Field to filter by some value"
+              "description": "Field to filter contacts by type"
+            }
+          },
+          {
+            "in": "query",
+            "name": "isFavourite",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "Field to filter contacts by favourite status"
             }
           }
         ],
@@ -127,8 +136,7 @@
                       "example": "Successfully found contacts!"
                     },
                     "data": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/contact"
+                      "$ref": "#/components/schemas/paginated-contacts"
                     }
                   }
                 }
@@ -191,6 +199,11 @@
                       "work",
                       "other"
                     ]
+                  },
+                  "photo": {
+                    "description": "Contact's avatar image",
+                    "type": "string",
+                    "format": "binary"
                   }
                 }
               }
@@ -337,10 +350,6 @@
                     "message": {
                       "type": "string",
                       "example": "No content"
-                    },
-                    "data": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/contact"
                     }
                   }
                 }
@@ -382,16 +391,7 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "contactId",
-                  "userId"
-                ],
                 "properties": {
-                  "contactId": {
-                    "description": "Contact's id",
-                    "type": "string",
-                    "example": "65e4decdd286b30065d54af9"
-                  },
                   "name": {
                     "description": "Contact's name",
                     "type": "string",
@@ -424,12 +424,7 @@
                   "photo": {
                     "description": "Link to contact's avatar image",
                     "type": "string",
-                    "example": "https://res.cloudinary.com/uqwgdu/image/upload/image.png"
-                  },
-                  "userId": {
-                    "description": "Contact's owner id",
-                    "type": "string",
-                    "example": "65e4decdd286b30065d54af9"
+                    "format": "binary"
                   }
                 }
               }
@@ -697,6 +692,41 @@
             "description": "Link to contact's avatar image",
             "type": "string",
             "example": "https://res.cloudinary.com/uqwgdu/image/upload/image.png"
+          }
+        }
+      },
+      "paginated-contacts": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/contact"
+            }
+          },
+          "page": {
+            "type": "integer",
+            "example": 1
+          },
+          "perPage": {
+            "type": "integer",
+            "example": 10
+          },
+          "totalItems": {
+            "type": "integer",
+            "example": 100
+          },
+          "totalPages": {
+            "type": "integer",
+            "example": 10
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "example": true
+          },
+          "hasPreviousPage": {
+            "type": "boolean",
+            "example": false
           }
         }
       },
