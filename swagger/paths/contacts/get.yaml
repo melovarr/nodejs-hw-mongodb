@@ -36,13 +36,18 @@ parameters:
       enum: ['_id', 'name', 'phoneNumber', 'email', 'isFavorite', 'contactType']
       description: Field to sort by, e.g., 'name' or 'contactType'
   - in: query
-    name: filter
+    name: contactType
     required: false
     schema:
       type: string
-      example: contactType
-      enum: ['contactType', 'isFavorite']
-      description: Field to filter by some value
+      enum: ['work', 'home', 'personal']
+      description: Field to filter contacts by type
+  - in: query
+    name: isFavourite
+    required: false
+    schema:
+      type: boolean
+      description: Field to filter contacts by favourite status
 responses:
   '200':
     description: 'Get all contacts'
@@ -62,7 +67,6 @@ responses:
               type: string
               example: Successfully found contacts!
             data:
-              type: object
-              $ref: '../../components/schemas/contact.yaml'
+              $ref: '../../components/schemas/paginated-contacts.yaml'
   '401':
     $ref: '../../components/responses/401.yaml'
